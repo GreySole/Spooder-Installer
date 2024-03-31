@@ -114,7 +114,7 @@ function readConfigFile(item) {
         // Read the config file synchronously
         const configFileContent = fs.readFileSync(configFilePath, 'utf-8');
         if (item != null) {
-            return JSON.parse(configFileContent) ? .[item];
+            return JSON.parse(configFileContent)?.[item];
         } else {
             return JSON.parse(configFileContent);
         }
@@ -587,7 +587,7 @@ ipcMain.handle("spooder:open", e => {
     if (fs.existsSync(path.join(installPath, "backend", "settings", "config.json"))) {
         try {
             let configFile = JSON.parse(fs.readFileSync(path.join(installPath, "backend", "settings", "config.json"), { encoding: "utf-8" }));
-            if (configFile.network ? .host_port != null) {
+            if (configFile.network?.host_port != null) {
                 hostPort = configFile.network.host_port;
             }
         } catch (e) {
