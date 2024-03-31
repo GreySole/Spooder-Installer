@@ -38,8 +38,8 @@ module.exports = {
       name: '@electron-forge/publisher-github',
       config: {
         repository: {
-          owner: 'greysole',
-          name: 'spooder-installer'
+          owner: 'GreySole',
+          name: 'Spooder-Installer'
         },
         prerelease: true
       }
