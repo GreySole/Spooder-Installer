@@ -207,11 +207,13 @@ async function checkForSpooderUpdates() {
     let sInfo = fs.existsSync(installPath + "/package.json") ? JSON.parse(fs.readFileSync(installPath + "/package.json", { encoding: "utf-8" })) : null;
     if (sInfo == null) { console.log("Spooder not installed"); return; }
     let repoVersion = await checkRepoVersion();
-    if (semver.gt(repoVersion, sInfo.version)) {
+    console.log("COMPARING", semver.gt(semver.valid(repoVersion), semver.valid(sInfo.version)));
+    if (semver.gt(semver.valid(repoVersion), semver.valid(sInfo.version))) {
         console.log("NEW SPOODER UPDATE!", repoVersion);
         sendToBrowser("NEW SPOODER UPDATE! **v" + repoVersion + "** click the update button in the settings menu!");
     }
-    return compareVersion(repoVersion, sInfo.version);
+    
+    return semver.gt(semver.valid(repoVersion), semver.valid(sInfo.version));
 }
 
 function checkForSpooders(quiet) {
