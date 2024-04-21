@@ -1,6 +1,6 @@
 {
   "name": "Spooder",
-  "version": "0.4.91",
+  "version": "0.4.93",
   "description": "Installer app for Spooder bot",
   "main": "main.js",
   "scripts": {

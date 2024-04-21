@@ -441,47 +441,29 @@ function runSpooder(event) {
                     cwd: installPath,
                     stdio: "pipe"
                 });
-
-                spooderInstance.stdout.on("data", (e) => {
-                    sendToBrowser(e.toString());
-                });
-                spooderInstance.stderr.on("data", (e) => {
-                    console.log("SPOODER ERROR", e.toString());
-                    if (event != null) {
-                        event.sender.send('spooder-run-error', 1);
-                    }
-                    errorRestart();
-                    sendToBrowser(e.toString());
-                });
-                spooderInstance.on('error', (error) => {
-                    sendToBrowser("Spooder crashed!");
-                    errorRestart();
-                    console.error("Spooder crashed! ", error);
-                })
             } else {
                 console.log("RUNNING SPOODER INIT");
                 spooderInstance = fork(installPath + "/spooder.js", ["-i"], {
                     cwd: installPath,
                     stdio: "pipe"
                 });
-                spooderInstance.stdout.on("data", (e) => {
-                    sendToBrowser(e.toString());
-                });
-                spooderInstance.stderr.on("data", (e) => {
-                    console.log("SPOODER ERROR", e.toString());
-                    if (event != null) {
-                        event.sender.send('spooder-run-error', 1);
-                    }
-                    errorRestart();
-                    sendToBrowser(e.toString());
-                });
-
-                spooderInstance.on('error', (error) => {
-                    sendToBrowser("Spooder crashed!");
-                    errorRestart();
-                    console.error("Spooder crashed! ", error);
-                })
             }
+
+            spooderInstance.stdout.on("data", (e) => {
+                sendToBrowser(e.toString());
+            });
+            spooderInstance.stderr.on("data", (e) => {
+                console.log("SPOODER ERROR", e.toString());
+                if (event != null) {
+                    event.sender.send('spooder-run-error', 1);
+                }
+                sendToBrowser(e.toString());
+            });
+            spooderInstance.on("message", (m) => {
+                if(m.type == "crash"){
+                    errorRestart();
+                }
+            })
 
             if (event != null) {
                 event.sender.send('spooder-run-start', 1);

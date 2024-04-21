@@ -1,182 +1,263 @@
-  :root{
-    --button-color: #008080;
-    --button-delete-color: #CD5C5C;
-    --button-add-color: #5C5CCD;
-    --button-save-color:#268626;
-    --button-plugin-color:#0099CC;
+   :root {
+      --button-color: #008080;
+      --button-delete-color: #CD5C5C;
+      --button-add-color: #5C5CCD;
+      --button-save-color: #268626;
+      --button-plugin-color: #0099CC;
   }
-
-  ::-webkit-scrollbar {
-    display: block;
-    width: 15px;
-}
-*:hover::-webkit-scrollbar {
-    display: block;
-}
-::-webkit-scrollbar-track {
-    background-color: var(--btn-color);
-    border: 5px solid transparent;
-    background-clip: padding-box;
-    border-radius: 20px;
-}
-::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.25);
-    border: 5px solid transparent;
-    background-clip: padding-box;
-    border-radius: 20px;
-}
-::-webkit-scrollbar-thumb:vertical:hover { background-color: var(--text-color) }
-::-webkit-scrollbar-thumb:vertical:active { background-color: var(--text-color) }
-
-select {
-  border: 0;
-  border-radius: 5px;
-  box-shadow: 0 0 0 1px;
-  background-color:black;
-  color:white;
-}
   
-  body{
-    display:flex;
-    flex-flow:column;
-    overflow:hidden;
-    margin: 0;
-    padding: 0;
-    width: 100vw;
-    height: 100vh;
-    max-width:100%;
-    max-height:100%;
-    font-family: Arial, Helvetica, sans-serif
+   ::-webkit-scrollbar {
+      display: block;
+      width: 15px;
   }
-
-  .control{
-    display:flex;
-    flex-flow:row;
-    align-items:center;
-    justify-content: space-between;
-    height:20%;
-    padding:10px;
-    background-color: #222222;
+  
+  *:hover::-webkit-scrollbar {
+      display: block;
   }
-
-  .spinning{
-    animation-name:spin;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-    animation-duration:2s;
+  
+  ::-webkit-scrollbar-track {
+      background-color: var(--btn-color);
+      border: 5px solid transparent;
+      background-clip: padding-box;
+      border-radius: 20px;
   }
-
-  @keyframes spin{
-    0%{
-      transform:rotate(0deg);
-    }
-    100%{
-      transform:rotate(360deg);
-    }
+  
+  ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.25);
+      border: 5px solid transparent;
+      background-clip: padding-box;
+      border-radius: 20px;
   }
-
-  .control-buttons{
-    display:flex;
-    flex-flow:row;
+  
+  ::-webkit-scrollbar-thumb:vertical:hover {
+      background-color: var(--text-color)
   }
-
-  .control-spooder{
-    display:flex;
-    flex-flow:column;
-    align-items:center;
+  
+  ::-webkit-scrollbar-thumb:vertical:active {
+      background-color: var(--text-color)
   }
-
-  .control-spooder-pet{
-    font-size:36px;
+  
+  select {
+      border: 0;
+      border-radius: 5px;
+      box-shadow: 0 0 0 1px;
+      background-color: black;
+      color: white;
   }
-
-  .control-spooder-name{
-    font-size:24px;
-    color:white;
+  
+  body {
+      display: flex;
+      flex-flow: column;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      max-width: 100%;
+      max-height: 100%;
+      font-family: Arial, Helvetica, sans-serif
   }
-
-  .action-button{
-    display:flex;
-    align-items:center;
-    width:25px;
-    height:25px;
-    padding:10px;
-    margin:5px;
-    background-color:var(--button-color);
-    border-radius:10px;
-    cursor:pointer;
+  
+  .control {
+      display: flex;
+      flex-flow: row;
+      align-items: center;
+      justify-content: space-between;
+      height: 20%;
+      padding: 10px;
+      background-color: #222222;
   }
-
-  .action-button:hover{
-    filter:brightness(1.2);
+  
+  .spinning {
+      animation-name: spin;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+      animation-duration: 2s;
   }
-
-  .action-button.delete:hover{
-    background-color: var(--button-delete-color);
-    filter:brightness(1.2);
+  
+  @keyframes spin {
+      0% {
+          transform: rotate(0deg);
+      }
+      100% {
+          transform: rotate(360deg);
+      }
   }
-
-  .action-button.install:hover{
-    background-color: var(--button-save-color);
-    filter:brightness(1.2);
+  
+  .control-buttons {
+      display: flex;
+      flex-flow: row;
   }
-
-  .main-window{
-    display:flex;
-    background-color:black;
-    color:white;
-    width:100%;
-    height:80%;
+  
+  .control-spooder {
+      display: flex;
+      flex-flow: column;
+      align-items: center;
   }
-
+  
+  .control-spooder-pet {
+      font-size: 36px;
+  }
+  
+  .control-spooder-name {
+      font-size: 24px;
+      color: white;
+  }
+  
+  .action-button {
+      display: flex;
+      align-items: center;
+      width: 25px;
+      height: 25px;
+      padding: 10px;
+      margin: 5px;
+      background-color: var(--button-color);
+      border-radius: 10px;
+      cursor: pointer;
+  }
+  
+  .action-button:hover {
+      filter: brightness(1.2);
+  }
+  
+  .action-button.delete:hover {
+      background-color: var(--button-delete-color);
+      filter: brightness(1.2);
+  }
+  
+  .action-button.install:hover {
+      background-color: var(--button-save-color);
+      filter: brightness(1.2);
+  }
+  
+  .main-window {
+      display: flex;
+      background-color: black;
+      color: white;
+      width: 100%;
+      height: 80%;
+  }
+  
   .console,
-  .settings{
-    display:none;
+  .settings {
+      display: none;
   }
-
-  .main-window[tab='console'] .console{
-    display:flex;
-    flex-flow:column;
-    background-color: black;
-    color:white;
-    overflow:auto;
-    width:100%;
-    height:100%;
+  
+  .main-window[tab='console'] .console {
+      display: flex;
+      flex-flow: column;
+      background-color: black;
+      color: white;
+      overflow: auto;
+      width: 100%;
+      height: 100%;
   }
-
-  .main-window[tab='settings'] .settings{
-    display:flex;
-    flex-flow:column;
-    width:100%;
-    height:100%;
+  
+  .main-window[tab='settings'] .settings {
+      display: flex;
+      flex-flow: column;
+      width: 100%;
+      height: 100%;
   }
-
-  .console{
-    padding:10px;
+  
+  .console {
+      padding: 10px;
   }
-
-  #settingsButton.open{
-    background-color:var(--button-save-color);
+  
+  #settingsButton.open {
+      background-color: var(--button-save-color);
   }
-
-  .settings-fields{
-    display:flex;
-    flex-flow:column;
-    padding:10px;
+  
+  .settings-fields {
+      display: flex;
+      flex-flow: column;
+      padding: 10px;
   }
-
-  .settings-fields label{
-    display:flex;
-    flex-flow:row;
-    align-items:center;
+  
+  .settings-fields label {
+      display: flex;
+      flex-flow: row;
+      align-items: center;
   }
-
+  
   .settings-fields div,
-  .settings-fields select{
-    margin-left:10px;
+  .settings-fields select {
+      margin-left: 10px;
   }
-
-  .spooder-log{
+  
+  .spooder-log {
+      color: white;
+      white-space: pre-wrap;
+  }
+  
+  .FgBlack {
+    color:black;
+  }
+  
+  .FgRed {
+    color:red;
+  }
+  
+  .FgGreen {
+    color:green;
+  }
+  
+  .FgYellow {
+    color:yellow;
+  }
+  
+  .FgBlue {
+    color:blue;
+  }
+  
+  .FgMagenta {
+    color:magenta;
+  }
+  
+  .FgCyan {
+    color:cyan;
+  }
+  
+  .FgWhite {
     color:white;
-    white-space: pre-wrap;
+  }
+  
+  .FgGray {
+    color:gray;
+  }
+  
+  .BgBlack {
+    background-color: black;
+  }
+  
+  .BgRed {
+    background-color: red;
+  }
+  
+  .BgGreen {
+    background-color: green;
+  }
+  
+  .BgYellow {
+    background-color: yellow;
+  }
+  
+  .BgBlue {
+    background-color: blue;
+  }
+  
+  .BgMagenta {
+    background-color: magenta;
+  }
+  
+  .BgCyan {
+    background-color: cyan;
+  }
+  
+  .BgWhite {
+    background-color: white;
+  }
+  
+  .BgGray {
+    background-color: gray;
   }

@@ -89,8 +89,8 @@ function stopSpooder(){
 function updateSpooder(){
     let changeConfirm = confirm("We will install the new version of Spooder. No user data will be erased. You ready?");
     if(changeConfirm === true){
-        installer.updateSpooder();
         switchTab("console");
+        installer.updateSpooder();
         state.installing = true;
         updateStatus();
     }
@@ -104,6 +104,7 @@ function restartSpooder(){
 function deleteSpooder(){
     let confirmation = confirm("This will delete your Spooder entirely. Be sure to backup your settings and plugins in WebUI -> Config -> Backup/Restore if you want to reinstall!");
     if(confirmation == true){
+        switchTab("console");
         installer.deleteSpooder();
         installer.status();
     }
@@ -112,6 +113,7 @@ function deleteSpooder(){
 function cleanSpooder(){
     let confirmation = confirm("This will wipe your Spooder's settings and plugins. You will have to initialize again. Continue?");
     if(confirmation == true){
+        switchTab("console");
         installer.cleanSpooder();
         installer.status();
     }
@@ -280,16 +282,54 @@ function updateSettings(){
     $(".settings").innerHTML = finalHTML;
 }
 
+window.logEffects = {
+    Reset:"\x1b[0m",
+    Bright:"\x1b[1m",
+    Dim:"\x1b[2m",
+    Underscore:"\x1b[4m",
+    Blink:"\x1b[5m",
+    Reverse:"\x1b[7m",
+    Hidden:"\x1b[8m",
+
+    FgBlack:"\x1b[30m",
+    FgRed:"\x1b[31m",
+    FgGreen:"\x1b[32m",
+    FgYellow:"\x1b[33m",
+    FgBlue:"\x1b[34m",
+    FgMagenta:"\x1b[35m",
+    FgCyan:"\x1b[36m",
+    FgWhite:"\x1b[37m",
+    FgGray:"\x1b[90m",
+
+    BgBlack:"\x1b[40m",
+    BgRed:"\x1b[41m",
+    BgGreen:"\x1b[42m",
+    BgYellow:"\x1b[43m",
+    BgBlue:"\x1b[44m",
+    BgMagenta:"\x1b[45m",
+    BgCyan:"\x1b[46m",
+    BgWhite:"\x1b[47m",
+    BgGray:"\x1b[100m"
+};
+
 window.addEventListener("spooder-stdout", e=>{
     let message = e.detail;
-    message = message.replace(/\u001b[^ ]+/g, '');
     
     addLog(message);
 });
 
 function addLog(txt){
+    let newLogClasses = [];
+    for(let e in logEffects){
+        if(txt.includes(logEffects[e])){
+            newLogClasses.push(e);
+        }
+    }
+    console.log("LOG CLASSES", newLogClasses);
+    txt = txt.replace(/\u001b[^ ]+/g, '');
     let newLog = document.createElement("div");
     newLog.className = "spooder-log";
+    newLog.classList.add(...newLogClasses);
     newLog.innerHTML = markdown.makeHtml(txt);
     
     $(".console").append(newLog);

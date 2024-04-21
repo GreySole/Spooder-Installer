@@ -10,7 +10,6 @@ module.exports = {
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        setupExe:"Spooder Installer Setup.exe",
         iconUrl:path.join(process.cwd(), 'assets', 'favicon.ico'),
         setupIcon:path.join(process.cwd(), 'assets', 'favicon.ico'),
         loadingGif:path.join(process.cwd(), 'assets', 'spooder-loading.gif')
