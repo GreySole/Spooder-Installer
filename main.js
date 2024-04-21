@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, nativeTheme, shell, MessageChannelMain, dia
 const { port1, port2 } = new MessageChannelMain();
 const path = require('node:path');
 const { exec, spawn, fork } = require("child_process");
-const fs = require("fs");
+const fs = require("fs-extra");
 const chmodr = require("chmodr");
 const fetch = require("electron-fetch").default;
 const AdmZip = require("adm-zip");
@@ -330,8 +330,12 @@ function installSpooder(event, branch) {
                     const newFilePath = path.join(installPath, file);
 
                     if (fs.existsSync(newFilePath)) {
-                        if (newFilePath.includes("backend") && !newFilePath.includes("Spooder_Modules")) { continue; }
-                        fs.rmSync(newFilePath, { recursive: true });
+                        if (newFilePath.includes("backend")){
+                            mergeDirectories(currentFilePath, newFilePath);
+                            continue;
+                        }else{
+                            fs.rmSync(newFilePath, { recursive: true });
+                        }
                     }
 
                     fs.renameSync(currentFilePath, newFilePath);

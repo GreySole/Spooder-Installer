@@ -1,6 +1,6 @@
 {
   "name": "Spooder",
-  "version": "0.4.93",
+  "version": "0.4.95",
   "description": "Installer app for Spooder bot",
   "main": "main.js",
   "scripts": {
@@ -29,6 +29,7 @@
     "electron-fetch": "^1.9.1",
     "electron-squirrel-startup": "^1.0.0",
     "electron-updater": "^6.1.8",
+    "fs-extra": "^11.2.0",
     "semver": "^7.6.0"
   }
 }
