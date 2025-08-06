@@ -144,6 +144,162 @@ function saveSelectedFolder(selectedFolder) {
     }
 }
 
+function backupSpooderSettings() {
+    return new Promise((resolve, reject) => {
+        try {
+            const settingsPath = path.join(installPath, "backend", "settings");
+            
+            // Check if settings directory exists
+            if (!fs.existsSync(settingsPath)) {
+                reject(new Error("Settings directory not found. Make sure Spooder is installed and initialized."));
+                return;
+            }
+
+            // Show save dialog to let user choose where to save the backup
+            const saveOptions = {
+                title: 'Save Spooder Settings Backup',
+                defaultPath: `spooder-settings-backup-${new Date().toISOString().slice(0, 10)}.zip`,
+                filters: [
+                    { name: 'ZIP Archives', extensions: ['zip'] }
+                ]
+            };
+
+            dialog.showSaveDialog(null, saveOptions).then((result) => {
+                if (result.canceled) {
+                    resolve("canceled");
+                    return;
+                }
+
+                const backupPath = result.filePath;
+                
+                try {
+                    // Create a new zip file
+                    const zip = new AdmZip();
+                    
+                    // Add all files from the settings directory to the zip
+                    const files = fs.readdirSync(settingsPath);
+                    files.forEach(file => {
+                        const filePath = path.join(settingsPath, file);
+                        const stats = fs.statSync(filePath);
+                        
+                        if (stats.isFile()) {
+                            zip.addLocalFile(filePath);
+                        } else if (stats.isDirectory()) {
+                            zip.addLocalFolder(filePath, file);
+                        }
+                    });
+                    
+                    // Write the zip file
+                    zip.writeZip(backupPath);
+                    
+                    sendToBrowser(`Settings backup saved to: ${backupPath}`);
+                    resolve(backupPath);
+                    
+                } catch (error) {
+                    console.error('Error creating backup:', error);
+                    reject(error);
+                }
+            }).catch((error) => {
+                console.error('Error showing save dialog:', error);
+                reject(error);
+            });
+            
+        } catch (error) {
+            console.error('Error in backupSpooderSettings:', error);
+            reject(error);
+        }
+    });
+}
+
+function backupSpooderPlugins() {
+    return new Promise((resolve, reject) => {
+        try {
+            const pluginsPath = path.join(installPath, "backend", "Spooder_Modules");
+            
+            // Check if plugins directory exists
+            if (!fs.existsSync(pluginsPath)) {
+                reject(new Error("Plugins directory not found. Make sure Spooder is installed and has plugins."));
+                return;
+            }
+
+            // Show save dialog to let user choose where to save the backup
+            const saveOptions = {
+                title: 'Save Spooder Plugins Backup',
+                defaultPath: `spooder-plugins-backup-${new Date().toISOString().slice(0, 10)}.zip`,
+                filters: [
+                    { name: 'ZIP Archives', extensions: ['zip'] }
+                ]
+            };
+
+            dialog.showSaveDialog(null, saveOptions).then((result) => {
+                if (result.canceled) {
+                    resolve("canceled");
+                    return;
+                }
+
+                const backupPath = result.filePath;
+                
+                try {
+                    // Create a new zip file
+                    const zip = new AdmZip();
+                    
+                    // Function to recursively add files/folders while excluding node_modules
+                    function addToZipRecursively(sourcePath, zipPath = '') {
+                        const items = fs.readdirSync(sourcePath);
+                        
+                        items.forEach(item => {
+                            // Skip node_modules directories
+                            if (item === 'node_modules') {
+                                return;
+                            }
+                            
+                            const itemPath = path.join(sourcePath, item);
+                            const stats = fs.statSync(itemPath);
+                            const zipItemPath = zipPath ? path.join(zipPath, item) : item;
+                            
+                            if (stats.isFile()) {
+                                // Add file to zip with proper path structure
+                                zip.addLocalFile(itemPath, zipPath);
+                            } else if (stats.isDirectory()) {
+                                // Recursively add directory contents
+                                addToZipRecursively(itemPath, zipItemPath);
+                            }
+                        });
+                    }
+                    
+                    // Add all plugin folders to the zip (excluding node_modules)
+                    const pluginFolders = fs.readdirSync(pluginsPath);
+                    pluginFolders.forEach(pluginFolder => {
+                        const pluginFolderPath = path.join(pluginsPath, pluginFolder);
+                        const stats = fs.statSync(pluginFolderPath);
+                        
+                        if (stats.isDirectory()) {
+                            addToZipRecursively(pluginFolderPath, pluginFolder);
+                        }
+                    });
+                    
+                    // Write the zip file
+                    zip.writeZip(backupPath);
+                    
+                    sendToBrowser(`Plugins backup saved to: ${backupPath}`);
+                    resolve(backupPath);
+                    
+                } catch (error) {
+                    console.error('Error creating plugins backup:', error);
+                    reject(error);
+                }
+            }).catch((error) => {
+                console.error('Error showing save dialog:', error);
+                reject(error);
+            });
+            
+        } catch (error) {
+            console.error('Error in backupSpooderPlugins:', error);
+            reject(error);
+        }
+    });
+}
+
 function saveBranch(branch) {
     try {
         // Read the existing config file content
@@ -206,14 +362,20 @@ function compareVersion(v1, v2) {
 async function checkForSpooderUpdates() {
     let sInfo = fs.existsSync(installPath + "/package.json") ? JSON.parse(fs.readFileSync(installPath + "/package.json", { encoding: "utf-8" })) : null;
     if (sInfo == null) { console.log("Spooder not installed"); return; }
-    let repoVersion = await checkRepoVersion();
-    console.log("COMPARING", semver.gt(semver.valid(repoVersion), semver.valid(sInfo.version)));
-    if (semver.gt(semver.valid(repoVersion), semver.valid(sInfo.version))) {
-        console.log("NEW SPOODER UPDATE!", repoVersion);
-        sendToBrowser("NEW SPOODER UPDATE! **v" + repoVersion + "** click the update button in the settings menu!");
-    }
     
-    return semver.gt(semver.valid(repoVersion), semver.valid(sInfo.version));
+    try {
+        let repoVersion = await checkRepoVersion();
+        console.log("COMPARING", semver.gt(semver.valid(repoVersion), semver.valid(sInfo.version)));
+        if (semver.gt(semver.valid(repoVersion), semver.valid(sInfo.version))) {
+            console.log("NEW SPOODER UPDATE!", repoVersion);
+            sendToBrowser("NEW SPOODER UPDATE! **v" + repoVersion + "** click the update button in the settings menu!");
+        }
+        
+        return semver.gt(semver.valid(repoVersion), semver.valid(sInfo.version));
+    } catch (error) {
+        console.error("Error checking for updates:", error);
+        return false;
+    }
 }
 
 function checkForSpooders(quiet) {
@@ -246,20 +408,38 @@ function checkRepoVersion(branch) {
     if (branch == null) { branch = "main"; }
     return new Promise((res, rej) => {
         fetch("https://raw.githubusercontent.com/GreySole/Spooder/" + branch + "/package.json")
-            .then(res => res.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 res(data.version);
             })
+            .catch(error => {
+                console.error('Error fetching repo version:', error);
+                rej(error);
+            });
     })
 }
 
 function getBranches() {
     return new Promise((res, rej) => {
         fetch("https://api.github.com/repos/greysole/Spooder/branches")
-            .then(res => res.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 res(data);
             })
+            .catch(error => {
+                console.error('Error fetching branches:', error);
+                rej(error);
+            });
     })
 }
 
@@ -308,7 +488,12 @@ function installSpooder(event, branch) {
         event.sender.send('spooder-clone-start', 1);
 
         fetch("https://api.github.com/repos/greysole/Spooder/zipball/" + branch)
-            .then(response => response.arrayBuffer())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.arrayBuffer();
+            })
             .then(async data => {
                 const tempDir = app.getPath('userData') + "\\temp";;
                 const tempFile = path.join(tempDir, "spooder.zip");
@@ -492,9 +677,29 @@ const createWindow = async() => {
         }
     });
     win.removeMenu();
-    branches = await getBranches();
+    
+    try {
+        branches = await getBranches();
+    } catch (error) {
+        console.error("Error fetching branches:", error);
+        branches = []; // Fallback to empty array
+    }
+    
     win.focus();
     win.loadFile('index.html');
+
+    const dialogOpts = {
+        type: 'info',
+        buttons: ['Get the New Manager', 'Later'],
+        title: 'New Installer Available',
+        message: `This installer is no longer supported. Click the gear to backup your Spooder's settings and plugins. Grab the new Spooder Manager here https://github.com/GreySole/SpooderInstallerSharp/releases/latest`,
+    };
+
+    dialog.showMessageBox(null, dialogOpts).then((result) => {
+        if (result.response === 0) {
+            shell.openExternal("https://github.com/GreySole/SpooderInstallerSharp/releases/latest");
+        }
+    });
 }
 
 ipcMain.handle('dark-mode:toggle', () => {
@@ -563,6 +768,28 @@ ipcMain.handle("spooder:clean", e => {
 ipcMain.handle("spooder:delete", e => {
     if (fs.existsSync(installPath)) {
         fs.rmSync(installPath, { recursive: true });
+    }
+});
+
+ipcMain.handle("spooder:backup", async (e) => {
+    try {
+        const result = await backupSpooderSettings();
+        return result;
+    } catch (error) {
+        console.error('Backup failed:', error);
+        sendToBrowser(`Backup failed: ${error.message}`);
+        throw error;
+    }
+});
+
+ipcMain.handle("spooder:backup-plugins", async (e) => {
+    try {
+        const result = await backupSpooderPlugins();
+        return result;
+    } catch (error) {
+        console.error('Plugins backup failed:', error);
+        sendToBrowser(`Plugins backup failed: ${error.message}`);
+        throw error;
     }
 });
 

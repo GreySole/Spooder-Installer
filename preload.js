@@ -51,5 +51,7 @@ contextBridge.exposeInMainWorld('versions', {
     installStatus:() => ipcRenderer.invoke("spooder:install_status"),
     installNode: () => ipcRenderer.invoke("node:install"),
     openSpooder: () => ipcRenderer.invoke("spooder:open"),
-    setBranch: (branch) => ipcRenderer.invoke("branch:set", branch)
+    setBranch: (branch) => ipcRenderer.invoke("branch:set", branch),
+    backupSettings: () => ipcRenderer.invoke("spooder:backup"),
+    backupPlugins: () => ipcRenderer.invoke("spooder:backup-plugins")
   })

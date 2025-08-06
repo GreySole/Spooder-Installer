@@ -123,6 +123,44 @@ function viewSpooder(){
     installer.viewSpooder();
 }
 
+function backupSpooderSettings(){
+    if (!state.installed) {
+        alert("Spooder must be installed to backup settings.");
+        return;
+    }
+    installer.backupSettings()
+        .then((result) => {
+            if (result !== "canceled") {
+                addLog(`Settings backup completed: ${result}`);
+            } else {
+                addLog("Backup canceled by user.");
+            }
+        })
+        .catch((error) => {
+            console.error("Backup failed:", error);
+            addLog(`Backup failed: ${error.message}`);
+        });
+}
+
+function backupSpooderPlugins(){
+    if (!state.installed) {
+        alert("Spooder must be installed to backup plugins.");
+        return;
+    }
+    installer.backupPlugins()
+        .then((result) => {
+            if (result !== "canceled") {
+                addLog(`Plugins backup completed: ${result}`);
+            } else {
+                addLog("Backup canceled by user.");
+            }
+        })
+        .catch((error) => {
+            console.error("Plugins backup failed:", error);
+            addLog(`Plugins backup failed: ${error.message}`);
+        });
+}
+
 function installNode(){
     installer.installNode();
 }
@@ -258,6 +296,14 @@ function updateSettings(){
     let installButton = `
         <div class='action-button install' id='installButton' type='button' onclick='updateSpooder()'><svg fill='white' data-src='./assets/download-solid.svg'/></div>
     `;
+
+    let backupButton = `
+        <div class='action-button backup' id='backupButton' type='button' onclick='backupSpooderSettings()'><svg fill='white' data-src='./assets/download-solid.svg'/></div>
+    `;
+
+    let backupPluginsButton = `
+        <div class='action-button backup' id='backupPluginsButton' type='button' onclick='backupSpooderPlugins()'><svg fill='white' data-src='./assets/download-solid.svg'/></div>
+    `;
     
     
     let branchOptions = [];
@@ -274,6 +320,8 @@ function updateSettings(){
     let finalHTML = `
         <div class='settings-fields'>
             <label>Branch${branchSelect}</label>
+            ${state.installed ? "<label>Backup Settings"+backupButton+"</label>":""}
+            ${state.installed ? "<label>Backup Plugins"+backupPluginsButton+"</label>":""}
             <label>Delete Spooder ${deleteButton}</label>
             <label>Clean Spooder ${cleanButton}</label>
             ${state.updateAvailable ? "<label>Update Spooder"+installButton+"</label>":""}
